@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ModuleType {
+  WAKE_UP
+  BATHING
+  BRUSHING_TEETH
+  WEARING_UNIFORM
+  PREPARING_BOOKS
+  BREAKFAST
+  FAREWELL
+}
+
+enum DirectiveType {
+  NONE
+  GENERAL_HINT
+  SPECIFIC_VISUAL_CUE
+  FALLBACK_STATIC
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         String   @default("TEACHER")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("users")
+}
+
+model GameSession {
+  sessionId      String    @id @default(uuid()) @map("session_id") @db.Uuid
+  devicePseudoId String    @map("device_pseudo_id") @db.VarChar(64)
+  startedAt      DateTime  @map("started_at") @db.Timestamptz
+  completedAt    DateTime? @map("completed_at") @db.Timestamptz
+  isCompleted    Boolean   @default(false) @map("is_completed")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  interactions   InteractionLog[]
+
+  @@index([devicePseudoId], name: "idx_sessions_device")
+  @@map("game_sessions")
+}
+
+model InteractionLog {
+  logId            Int         @id @default(autoincrement()) @map("log_id")
+  sessionId        String      @map("session_id") @db.Uuid
+  moduleType       ModuleType  @map("module_type")
+  selectedObjectId String      @map("selected_object_id") @db.VarChar(100)
+  isCorrect        Boolean     @map("is_correct")
+  attemptIndex     Int         @map("attempt_index")
+  timestamp        DateTime    @map("timestamp") @db.Timestamptz
+
+  session          GameSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  adaptiveHint     AdaptiveHintLog?
+
+  @@index([sessionId, moduleType, attemptIndex], name: "idx_logs_session_module")
+  @@map("interaction_logs")
+}
+
+model AdaptiveHintLog {
+  hintId          Int           @id @default(autoincrement()) @map("hint_id")
+  logId           Int           @unique @map("log_id")
+  confidenceScore Float         @map("confidence_score") @db.DoublePrecision
+  directiveType   DirectiveType @map("directive_type")
+  isFallback      Boolean       @default(false) @map("is_fallback")
+  executionTimeMs Int           @map("execution_time_ms")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  interactionLog  InteractionLog @relation(fields: [logId], references: [logId], onDelete: Cascade)
+
+  @@map("adaptive_hint_logs")
+}
