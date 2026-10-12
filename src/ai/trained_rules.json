@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "model_type": "DecisionTreeClassifier",
+    "criterion": "gini",
+    "max_depth": 4,
+    "train_accuracy": 1.0,
+    "test_accuracy": 1.0,
+    "feature_names": [
+      "attempt_index",
+      "idle_time_ms",
+      "consecutive_failures",
+      "is_distractor_clicked"
+    ],
+    "classes": [
+      "FALLBACK_STATIC",
+      "GENERAL_HINT",
+      "NONE",
+      "SPECIFIC_VISUAL_CUE"
+    ],
+    "created_at": "2026-10-12T09:53:34.462284"
+  },
+  "root": {
+    "node_id": 0,
+    "is_leaf": false,
+    "feature": "attempt_index",
+    "feature_index": 0,
+    "threshold": 1.5,
+    "samples": 24,
+    "left": {
+      "node_id": 1,
+      "is_leaf": false,
+      "feature": "idle_time_ms",
+      "feature_index": 1,
+      "threshold": 3100.0,
+      "samples": 12,
+      "left": {
+        "node_id": 2,
+        "is_leaf": true,
+        "prediction": "NONE",
+        "confidence": 1.0,
+        "samples": 6,
+        "probabilities": {
+          "FALLBACK_STATIC": 0.0,
+          "GENERAL_HINT": 0.0,
+          "NONE": 1.0,
+          "SPECIFIC_VISUAL_CUE": 0.0
+        },
+        "rule_path": "(attempt_index <= 1.5) (idle_time_ms <= 3100.0)"
+      },
+      "right": {
+        "node_id": 3,
+        "is_leaf": true,
+        "prediction": "GENERAL_HINT",
+        "confidence": 1.0,
+        "samples": 6,
+        "probabilities": {
+          "FALLBACK_STATIC": 0.0,
+          "GENERAL_HINT": 1.0,
+          "NONE": 0.0,
+          "SPECIFIC_VISUAL_CUE": 0.0
+        },
+        "rule_path": "(attempt_index <= 1.5) (idle_time_ms > 3100.0)"
+      }
+    },
+    "right": {
+      "node_id": 4,
+      "is_leaf": false,
+      "feature": "attempt_index",
+      "feature_index": 0,
+      "threshold": 2.5,
+      "samples": 12,
+      "left": {
+        "node_id": 5,
+        "is_leaf": true,
+        "prediction": "SPECIFIC_VISUAL_CUE",
+        "confidence": 1.0,
+        "samples": 6,
+        "probabilities": {
+          "FALLBACK_STATIC": 0.0,
+          "GENERAL_HINT": 0.0,
+          "NONE": 0.0,
+          "SPECIFIC_VISUAL_CUE": 1.0
+        },
+        "rule_path": "(attempt_index > 1.5) (attempt_index <= 2.5)"
+      },
+      "right": {
+        "node_id": 6,
+        "is_leaf": true,
+        "prediction": "FALLBACK_STATIC",
+        "confidence": 1.0,
+        "samples": 6,
+        "probabilities": {
+          "FALLBACK_STATIC": 1.0,
+          "GENERAL_HINT": 0.0,
+          "NONE": 0.0,
+          "SPECIFIC_VISUAL_CUE": 0.0
+        },
+        "rule_path": "(attempt_index > 1.5) (attempt_index > 2.5)"
+      }
+    }
+  }
+}

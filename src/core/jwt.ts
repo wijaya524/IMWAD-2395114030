@@ -35,7 +35,7 @@ export function generate_token_pair(payload: UserTokenPayload): TokenPair {
       token_type: 'access',
     },
     JWT_SECRET,
-    { ...signOptions, expiresIn: ACCESS_EXPIRES_IN }
+    { ...signOptions, expiresIn: ACCESS_EXPIRES_IN as any }
   );
 
   // 2. Refresh Token: masa berlaku 7 hari (hanya membawa sub untuk meminimalkan data exposure)
@@ -45,7 +45,7 @@ export function generate_token_pair(payload: UserTokenPayload): TokenPair {
       token_type: 'refresh',
     },
     JWT_SECRET,
-    { ...signOptions, expiresIn: REFRESH_EXPIRES_IN }
+    { ...signOptions, expiresIn: REFRESH_EXPIRES_IN as any }
   );
 
   return {

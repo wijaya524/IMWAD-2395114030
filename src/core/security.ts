@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SECRET_KEY || 'Ryan_ganteng_pengen_lanjut_s2_ITB';
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(12);
@@ -15,16 +15,16 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 export function generateTokenPair(payload: { userId: string; email: string; role: string }) {
   // Access Token: 30 menit
-  const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '30m' });
+  const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '30m' as any });
   // Refresh Token: 7 hari
-  const refreshToken = jwt.sign({ userId: payload.userId }, SECRET_KEY, { expiresIn: '7d' });
+  const refreshToken = jwt.sign({ userId: payload.userId }, SECRET_KEY, { expiresIn: '7d' as any });
 
   return { accessToken, refreshToken };
 }
 
 export function verifyToken(token: string) {
   try {
-    return jwt.verify(token, SECRET_KEY) as { userId: string; email: string; role: string };
+    return jwt.verify(token, SECRET_KEY) as unknown as { userId: string; email: string; role: string };
   } catch {
     return null;
   }
